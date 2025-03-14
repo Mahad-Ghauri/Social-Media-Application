@@ -49,7 +49,7 @@ class _LoginScreenState extends State<LoginScreen>
       backgroundColor: const Color(0xFFF5F7FA),
       body: Stack(
         children: [
-          // Four image animations with longer durations
+          
           Positioned(
             top: -40,
             left: 0,

@@ -1,3 +1,4 @@
+import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media_application/screens/login_screen.dart';
@@ -37,7 +38,9 @@ class _SignupScreenState extends State<SignupScreen>
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {  
+    final double width = MediaQuery.of(context).size.width;
+    final double height = MediaQuery.of(context).size.height;
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final isSmallScreen = screenSize.height < 700;
@@ -47,6 +50,60 @@ class _SignupScreenState extends State<SignupScreen>
       body: Stack(
         children: [
           UIWidgets.buildBackground(theme),
+
+          Positioned(
+            top: -40,
+            left: 0,
+            child: FadeInUp(
+              duration: Duration(seconds: 2),
+              child: Image.asset(
+                'assets/images/one.png',
+                width: width,
+                height: 400,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            top: -80,
+            left: 0,
+            child: FadeInUp(
+              duration: Duration(seconds: 4),
+              child: Image.asset(
+                'assets/images/one.png',
+                width: width,
+                height: 400,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            top: -120,
+            left: 0,
+            child: FadeInUp(
+              duration: Duration(seconds: 6),
+              child: Image.asset(
+                'assets/images/one.png',
+                width: width,
+                height: 400,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          Positioned(
+            top: -160,
+            left: 0,
+            child: FadeInUp(
+              duration: Duration(seconds: 8),
+              child: Image.asset(
+                'assets/images/one.png',
+                width: width,
+                height: 400,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
@@ -130,8 +187,11 @@ class _SignupScreenState extends State<SignupScreen>
                                     ),
                                     TextButton(
                                       onPressed: () {
-                                        Navigator.pushNamed(context, LoginScreen.id);
-                                        
+                                        Navigator.pushNamed(
+                                          context,
+                                          LoginScreen.id,
+                                        );
+
                                         // Navigator.pushReplacement(
                                         //   context,
                                         //   MaterialPageRoute(
