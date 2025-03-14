@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:social_media_application/screens/welcome_screen.dart';
+import 'package:social_media_application/screens/login_screen.dart';
+import 'package:social_media_application/screens/signup_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,8 +14,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-
-      home: const WelcomeScreen(),
+      initialRoute: WelcomeScreen.id,
+      routes: {
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        SignupScreen.id: (context) => const SignupScreen(),
+      },
+      // home: const WelcomeScreen(),
     );
   }
 }
