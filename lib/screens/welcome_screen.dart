@@ -5,7 +5,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:social_media_application/screens/login_screen.dart';
 
 class WelcomeScreen extends StatefulWidget {
-  static const  String id = 'WelcomeScreen';
+  static const String id = 'WelcomeScreen';
   const WelcomeScreen({super.key});
 
   @override
