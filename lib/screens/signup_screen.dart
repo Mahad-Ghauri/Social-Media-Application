@@ -40,7 +40,6 @@ class _SignupScreenState extends State<SignupScreen>
   @override
   Widget build(BuildContext context) {  
     final double width = MediaQuery.of(context).size.width;
-    final double height = MediaQuery.of(context).size.height;
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
     final isSmallScreen = screenSize.height < 700;
