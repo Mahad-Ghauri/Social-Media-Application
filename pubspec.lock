@@ -129,6 +129,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.1"
+  floating_action_bubble:
+    dependency: "direct main"
+    description:
+      name: floating_action_bubble
+      sha256: "760fd392eaf01e5bccf58889ceaf98d3e90f51066a7efd426d5db5888528931a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.4"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -208,6 +216,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.2"
+  ionicons:
+    dependency: "direct main"
+    description:
+      name: ionicons
+      sha256: "5496bc65a16115ecf05b15b78f494ee4a8869504357668f0a11d689e970523cf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.2"
   jwt_decode:
     dependency: transitive
     description:
@@ -408,6 +424,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
+  salomon_bottom_bar:
+    dependency: "direct main"
+    description:
+      name: salomon_bottom_bar
+      sha256: e20abf2e449749432223a8b4e6647c212eef6c2b638e0ed8cc92eff9529c2b48
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.3.2"
   shared_preferences:
     dependency: transitive
     description:

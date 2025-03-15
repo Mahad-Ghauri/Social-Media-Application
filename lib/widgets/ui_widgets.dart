@@ -48,9 +48,9 @@ class UIWidgets {
   static Widget buildLogo(double size) {
     return Image.asset(
       'assets/images/logo.png',
-      width: size,
-      height: size,
-      fit: BoxFit.contain,
+      width: 250,
+      height: 250,
+      // fit: BoxFit.contain,
     );
   }
 
