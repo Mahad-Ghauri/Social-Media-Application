@@ -7,31 +7,6 @@ class UIWidgets {
   static Widget buildBackground(ThemeData theme) {
     return Stack(
       children: [
-        // Background circles with opacity
-        // Positioned(
-        //   top: -100,
-        //   right: -100,
-        //   child: Container(
-        //     width: 300,
-        //     height: 300,
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       color: theme.colorScheme.primary.withAlpha(38),
-        //     ),
-        //   ),
-        // ),
-        // Positioned(
-        //   bottom: -80,
-        //   left: -80,
-        //   child: Container(
-        //     width: 250,
-        //     height: 250,
-        //     decoration: BoxDecoration(
-        //       shape: BoxShape.circle,
-        //       color: theme.colorScheme.primary.withAlpha(38),
-        //     ),
-        //   ),
-        // ),
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -56,7 +31,6 @@ class UIWidgets {
 
   static Widget buildTextField({
     bool obscureText = false,
-    // For the Visible Password Icon
     VoidCallback? onSuffixIconPressed,
     bool hasSuffixIcon = false,
     bool isPasswordVisible = false,
@@ -64,15 +38,23 @@ class UIWidgets {
     required IconData icon,
     required ThemeData theme,
     required TextEditingController controller,
+    String? Function(String?)? validator,
+    void Function(String)? onChanged,
+    TextInputType? keyboardType,
+    AutovalidateMode autovalidateMode = AutovalidateMode.onUserInteraction,
   }) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.grey.shade200.withAlpha(204),
         borderRadius: BorderRadius.circular(16),
       ),
-      child: TextField(
+      child: TextFormField(
         controller: controller,
         obscureText: obscureText && !isPasswordVisible,
+        validator: validator,
+        onChanged: onChanged,
+        keyboardType: keyboardType,
+        autovalidateMode: autovalidateMode,
         style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
           hintText: hintText,
@@ -90,7 +72,10 @@ class UIWidgets {
                     onPressed: onSuffixIconPressed,
                   )
                   : null,
-
+          errorStyle: GoogleFonts.poppins(
+            fontSize: 12,
+            color: theme.colorScheme.error,
+          ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,
@@ -101,6 +86,14 @@ class UIWidgets {
               color: theme.colorScheme.primary.withAlpha(128),
               width: 1.5,
             ),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: theme.colorScheme.error, width: 1),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(16),
+            borderSide: BorderSide(color: theme.colorScheme.error, width: 1.5),
           ),
           contentPadding: const EdgeInsets.symmetric(
             vertical: 14,

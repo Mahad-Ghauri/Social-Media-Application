@@ -118,15 +118,7 @@ class _SignupScreenState extends State<SignupScreen>
                   return Column(
                     children: [
                       SizedBox(height: isSmallScreen ? 20 : 30),
-                      UIWidgets.buildLogo(isSmallScreen ? 80 : 100),
-                      Text(
-                        "Join us today",
-                        style: GoogleFonts.poppins(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black54,
-                        ),
-                      ),
+                      UIWidgets.buildLogo(isSmallScreen ? 150 : 200),
                       SizedBox(height: isSmallScreen ? 16 : 24),
                       UIWidgets.buildGlassmorphicCard(
                         context: context,
@@ -157,14 +149,39 @@ class _SignupScreenState extends State<SignupScreen>
                               icon: Icons.person_outline,
                               theme: theme,
                               controller: inputControllers.nameController,
+                              keyboardType: TextInputType.name,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your full name';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                inputControllers.nameController.text = value;
+                              },
                             ),
-                            // ------------ Email ----------------                
+                            // ------------ Email ----------------
                             SizedBox(height: isSmallScreen ? 12 : 16),
                             UIWidgets.buildTextField(
                               hintText: "Email",
                               icon: Icons.email_outlined,
                               theme: theme,
                               controller: inputControllers.emailController,
+                              keyboardType: TextInputType.emailAddress,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your email';
+                                }
+                                if (!RegExp(
+                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                ).hasMatch(value)) {
+                                  return 'Please enter a valid email';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                inputControllers.emailController.text = value;
+                              },
                             ),
                             // ------------ Password ----------------
                             SizedBox(height: isSmallScreen ? 12 : 16),
@@ -180,8 +197,19 @@ class _SignupScreenState extends State<SignupScreen>
                                   () => setState(() {
                                     showConfirmPassword = !showConfirmPassword;
                                   }),
+                              keyboardType: TextInputType.visiblePassword,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                inputControllers.passwordController.text =
+                                    value;
+                              },
                             ),
-                            // ------------ Confirm Password ----------------     
+                            // ------------ Confirm Password ----------------
                             SizedBox(height: isSmallScreen ? 12 : 16),
                             UIWidgets.buildTextField(
                               hintText: "Confirm Password",
@@ -196,6 +224,18 @@ class _SignupScreenState extends State<SignupScreen>
                                   () => setState(() {
                                     showConfirmPassword = !showConfirmPassword;
                                   }),
+                              keyboardType: TextInputType.visiblePassword,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Please enter your password';
+                                }
+                                return null;
+                              },
+                              onChanged: (value) {
+                                inputControllers
+                                    .confirmPasswordController
+                                    .text = value;
+                              },
                             ),
                             SizedBox(height: isSmallScreen ? 16 : 24),
                             UIWidgets.buildAuthButton(theme, "Sign up", () {

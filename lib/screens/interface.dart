@@ -5,6 +5,7 @@ import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class InterfacePage extends StatefulWidget {
+  static const String id = 'InterfacePage';
   const InterfacePage({super.key});
 
   @override

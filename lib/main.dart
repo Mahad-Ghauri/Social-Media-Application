@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:social_media_application/screens/interface.dart';
 import 'package:social_media_application/screens/welcome_screen.dart';
 import 'package:social_media_application/screens/login_screen.dart';
 import 'package:social_media_application/screens/signup_screen.dart';
@@ -42,8 +43,9 @@ class MyApp extends StatelessWidget {
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
+        InterfacePage.id : (context) => const InterfacePage(),
+
       },
-      // home: const WelcomeScreen(),
     );
   }
 }
