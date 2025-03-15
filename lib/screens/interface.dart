@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
@@ -18,12 +19,13 @@ class _InterfacePageState extends State<InterfacePage>
   late Animation<double> _animation;
   late AnimationController _animationController;
 
-  // Placeholder pages for each tab
-  final List<Widget> _pages = [
-    const Center(child: Text('Home Feed')),
-    const Center(child: Text('Upload')),
-    const Center(child: Text('Profile')),
-  ];
+  // App theme colors
+  final Color primaryColor = const Color(0xFF6200EE);
+  final Color secondaryColor = const Color(0xFF03DAC6);
+  final Color backgroundColor = const Color(0xFFF5F5F5);
+
+  // Placeholder pages for each tab with proper padding
+  late final List<Widget> _pages;
 
   @override
   void initState() {
@@ -38,21 +40,44 @@ class _InterfacePageState extends State<InterfacePage>
     );
     _animation = Tween<double>(begin: 0, end: 1).animate(curvedAnimation);
 
+    // Initialize pages with proper padding
+    _pages = [
+      const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(child: Text('Home Feed', style: TextStyle(fontSize: 18))),
+      ),
+      const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(child: Text('Upload', style: TextStyle(fontSize: 18))),
+      ),
+      const Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Center(child: Text('Profile', style: TextStyle(fontSize: 18))),
+      ),
+    ];
+
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
-        title: Text(
-          'Social Media',
-          style: GoogleFonts.poppins(fontWeight: FontWeight.w600),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 8.0),
+          child: Text(
+            'Social Media',
+            style: GoogleFonts.poppins(
+              fontWeight: FontWeight.w600,
+              color: Colors.white,
+            ),
+          ),
         ),
         actions: [
           // Messages button
           IconButton(
-            icon: const Icon(Ionicons.chatbubble_outline),
+            icon: const Icon(Ionicons.chatbubble_outline, color: Colors.white),
             onPressed: () {
               // Navigate to messages
             },
@@ -60,9 +85,13 @@ class _InterfacePageState extends State<InterfacePage>
           const SizedBox(width: 8),
         ],
         elevation: 0,
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        backgroundColor: primaryColor,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(16)),
+        ),
+        systemOverlayStyle: SystemUiOverlayStyle.light,
       ),
-      body: _pages[_currentIndex],
+      body: SafeArea(child: _pages[_currentIndex]),
       floatingActionButton: FloatingActionBubble(
         animation: _animation,
         onPress:
@@ -72,12 +101,12 @@ class _InterfacePageState extends State<InterfacePage>
                     : _animationController.forward(),
         iconColor: Colors.white,
         iconData: Icons.chat,
-        backGroundColor: Theme.of(context).primaryColor,
+        backGroundColor: secondaryColor,
         items: [
           Bubble(
             title: "Chat with AI",
             iconColor: Colors.white,
-            bubbleColor: Theme.of(context).primaryColor,
+            bubbleColor: secondaryColor,
             icon: Icons.chat,
             titleStyle: GoogleFonts.poppins(fontSize: 16, color: Colors.white),
             onPress: () {
@@ -88,7 +117,9 @@ class _InterfacePageState extends State<InterfacePage>
         ],
       ),
       bottomNavigationBar: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         decoration: BoxDecoration(
+          color: primaryColor,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),
@@ -96,28 +127,33 @@ class _InterfacePageState extends State<InterfacePage>
               offset: const Offset(0, -5),
             ),
           ],
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
         ),
         child: SalomonBottomBar(
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
+          margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           items: [
             SalomonBottomBarItem(
               icon: const Icon(Ionicons.home_outline),
               activeIcon: const Icon(Ionicons.home),
               title: const Text('Home'),
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: Colors.white,
+              unselectedColor: Colors.white.withOpacity(0.7),
             ),
             SalomonBottomBarItem(
               icon: const Icon(Ionicons.add_circle_outline),
               activeIcon: const Icon(Ionicons.add_circle),
               title: const Text('Upload'),
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: Colors.white,
+              unselectedColor: Colors.white.withOpacity(0.7),
             ),
             SalomonBottomBarItem(
               icon: const Icon(Ionicons.person_outline),
               activeIcon: const Icon(Ionicons.person),
               title: const Text('Profile'),
-              selectedColor: Theme.of(context).primaryColor,
+              selectedColor: Colors.white,
+              unselectedColor: Colors.white.withOpacity(0.7),
             ),
           ],
         ),

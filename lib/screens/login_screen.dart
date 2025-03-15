@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:social_media_application/Controller/input_controllers.dart';
 import 'package:social_media_application/screens/signup_screen.dart';
 import 'package:social_media_application/widgets/ui_widgets.dart';
+import 'package:social_media_application/Controller/authentication_controller.dart';
 
 class LoginScreen extends StatefulWidget {
   static const String id = 'LoginScreen';
@@ -21,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen>
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final AuthenticationController authController = AuthenticationController();
 
   @override
   void initState() {
@@ -46,8 +48,46 @@ class _LoginScreenState extends State<LoginScreen>
 
   void _handleSignIn() {
     if (_formKey.currentState!.validate()) {
-      // Handle sign in logic here
-      print('Form is valid');
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      // Attempt to sign in
+      authController
+          .signInWithEmailPassword(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+          )
+          .then((_) {
+            // Close loading indicator
+            Navigator.pop(context);
+
+            // Show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Successfully signed in!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Navigate to home screen
+            Navigator.pushReplacementNamed(context, 'InterfacePage');
+          })
+          .catchError((error) {
+            // Close loading indicator
+            Navigator.pop(context);
+
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString()),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
     }
   }
 
@@ -174,6 +214,7 @@ class _LoginScreenState extends State<LoginScreen>
                                   setState(() {});
                                 },
                               ),
+                 
                               // ------------------- Password -------------------
                               SizedBox(height: isSmallScreen ? 12 : 16),
                               UIWidgets.buildTextField(
