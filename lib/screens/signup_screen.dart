@@ -1,6 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:social_media_application/Controller/authentication_controller.dart';
+import 'package:social_media_application/Controller/input_controllers.dart';
 import 'package:social_media_application/screens/login_screen.dart';
 import 'package:social_media_application/widgets/ui_widgets.dart';
 
@@ -37,8 +39,12 @@ class _SignupScreenState extends State<SignupScreen>
     super.dispose();
   }
 
+  //  Instance for Authentication Controller
+  final AuthenticationController authController = AuthenticationController();
+  final InputControllers inputControllers = InputControllers();
+
   @override
-  Widget build(BuildContext context) {  
+  Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
     final screenSize = MediaQuery.of(context).size;
     final theme = Theme.of(context);
@@ -121,110 +127,114 @@ class _SignupScreenState extends State<SignupScreen>
                         ),
                       ),
                       SizedBox(height: isSmallScreen ? 16 : 24),
-                      Expanded(
-                        child: UIWidgets.buildGlassmorphicCard(
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                "Sign up",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.black87,
-                                ),
+                      UIWidgets.buildGlassmorphicCard(
+                        context: context,
+                        content: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              "Sign up",
+                              style: GoogleFonts.poppins(
+                                fontSize: 22,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
                               ),
-                              SizedBox(height: isSmallScreen ? 4 : 8),
-                              Text(
-                                "Create a new account to get started.",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 13,
-                                  color: Colors.black54,
-                                ),
+                            ),
+                            SizedBox(height: isSmallScreen ? 4 : 8),
+                            Text(
+                              "Create a new account to get started.",
+                              style: GoogleFonts.poppins(
+                                fontSize: 13,
+                                color: Colors.black54,
                               ),
-                              SizedBox(height: isSmallScreen ? 16 : 20),
-                              UIWidgets.buildTextField(
-                                hintText: "Full Name",
-                                icon: Icons.person_outline,
-                                theme: theme,
-                              ),
-                              SizedBox(height: isSmallScreen ? 12 : 16),
-                              UIWidgets.buildTextField(
-                                hintText: "Email",
-                                icon: Icons.email_outlined,
-                                theme: theme,
-                              ),
-                              SizedBox(height: isSmallScreen ? 12 : 16),
-                              UIWidgets.buildTextField(
-                                hintText: "Password",
-                                icon: Icons.lock_outline,
-                                obscureText: true,
-                                theme: theme,
-                              ),
-                              SizedBox(height: isSmallScreen ? 16 : 24),
-                              UIWidgets.buildAuthButton(
-                                theme,
-                                "Sign up",
-                                () {},
-                              ),
-                              SizedBox(height: isSmallScreen ? 16 : 20),
-                              UIWidgets.buildDivider(),
-                              SizedBox(height: isSmallScreen ? 16 : 20),
-                              UIWidgets.buildSocialButtons(theme),
-                              const Spacer(),
-                              Center(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      "Already have an account?",
-                                      style: GoogleFonts.poppins(
-                                        color: Colors.black54,
-                                        fontSize: 13,
-                                      ),
+                            ),
+                            SizedBox(height: isSmallScreen ? 16 : 20),
+                            UIWidgets.buildTextField(
+                              hintText: "Full Name",
+                              icon: Icons.person_outline,
+                              theme: theme,
+                              controller: inputControllers.nameController,
+                            ),
+                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            UIWidgets.buildTextField(
+                              hintText: "Email",
+                              icon: Icons.email_outlined,
+                              theme: theme,
+                              controller: inputControllers.emailController,
+                            ),
+                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            UIWidgets.buildTextField(
+                              hintText: "Password",
+                              icon: Icons.lock_outline,
+                              obscureText: true,
+                              theme: theme,
+                              controller: inputControllers.passwordController,
+                            ),
+                            SizedBox(height: isSmallScreen ? 16 : 24),
+                            UIWidgets.buildAuthButton(theme, "Sign up", () {
+                              authController.signUpWithEmailPassword(
+                                inputControllers.emailController.text.trim(),
+                                inputControllers.passwordController.text.trim(),
+                                context,
+                              );
+                            }),
+                            SizedBox(height: isSmallScreen ? 16 : 20),
+                            UIWidgets.buildDivider(),
+                            SizedBox(height: isSmallScreen ? 16 : 20),
+                            UIWidgets.buildSocialButtons(theme),
+                            const Spacer(),
+                            Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "Already have an account?",
+                                    style: GoogleFonts.poppins(
+                                      color: Colors.black54,
+                                      fontSize: 13,
                                     ),
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pushNamed(
-                                          context,
-                                          LoginScreen.id,
-                                        );
+                                  ),
+                                  TextButton(
+                                    onPressed: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        LoginScreen.id,
+                                      );
 
-                                        // Navigator.pushReplacement(
-                                        //   context,
-                                        //   MaterialPageRoute(
-                                        //     builder:
-                                        //         (context) =>
-                                        //             const LoginScreen(),
-                                        //   ),
-                                        // );
-                                      },
-                                      style: TextButton.styleFrom(
-                                        foregroundColor:
-                                            theme.colorScheme.primary,
-                                        padding: const EdgeInsets.symmetric(
-                                          horizontal: 8,
-                                          vertical: 0,
-                                        ),
-                                      ),
-                                      child: Text(
-                                        "Sign in",
-                                        style: GoogleFonts.poppins(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 13,
-                                          color: theme.colorScheme.primary,
-                                        ),
+                                      // Navigator.pushReplacement(
+                                      //   context,
+                                      //   MaterialPageRoute(
+                                      //     builder:
+                                      //         (context) =>
+                                      //             const LoginScreen(),
+                                      //   ),
+                                      // );
+                                    },
+                                    style: TextButton.styleFrom(
+                                      foregroundColor:
+                                          theme.colorScheme.primary,
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 0,
                                       ),
                                     ),
-                                  ],
-                                ),
+                                    child: Text(
+                                      "Sign in",
+                                      style: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 13,
+                                        color: theme.colorScheme.primary,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                          theme: theme,
-                          fadeAnimation: _fadeAnimation,
+                            ),
+                          ],
                         ),
+                        theme: theme,
+                        fadeAnimation: _fadeAnimation,
                       ),
                       SizedBox(height: isSmallScreen ? 16 : 20),
                     ],

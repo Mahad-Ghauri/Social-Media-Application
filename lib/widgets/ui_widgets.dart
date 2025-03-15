@@ -8,27 +8,36 @@ class UIWidgets {
     return Stack(
       children: [
         // Background circles with opacity
-        Positioned(
-          top: -100,
-          right: -100,
-          child: Container(
-            width: 300,
-            height: 300,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.colorScheme.primary.withAlpha(38),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: -80,
-          left: -80,
-          child: Container(
-            width: 250,
-            height: 250,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: theme.colorScheme.primary.withAlpha(38),
+        // Positioned(
+        //   top: -100,
+        //   right: -100,
+        //   child: Container(
+        //     width: 300,
+        //     height: 300,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: theme.colorScheme.primary.withAlpha(38),
+        //     ),
+        //   ),
+        // ),
+        // Positioned(
+        //   bottom: -80,
+        //   left: -80,
+        //   child: Container(
+        //     width: 250,
+        //     height: 250,
+        //     decoration: BoxDecoration(
+        //       shape: BoxShape.circle,
+        //       color: theme.colorScheme.primary.withAlpha(38),
+        //     ),
+        //   ),
+        // ),
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFFE0EAFC), Color(0xFFCFDEF3), Color(0xFFBBD2EC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
           ),
         ),
@@ -37,20 +46,18 @@ class UIWidgets {
   }
 
   static Widget buildLogo(double size) {
-    return Container(
-      color: const Color(0xFFF5F7FA),
-      child: Image.asset(
-        'assets/images/logo.png',
-        width: size,
-        height: size,
-        fit: BoxFit.contain,
-      ),
+    return Image.asset(
+      'assets/images/logo.png',
+      width: size,
+      height: size,
+      fit: BoxFit.contain,
     );
   }
 
   static Widget buildTextField({
     required String hintText,
     required IconData icon,
+    required TextEditingController controller,
     bool obscureText = false,
     required ThemeData theme,
   }) {
@@ -60,6 +67,7 @@ class UIWidgets {
         borderRadius: BorderRadius.circular(16),
       ),
       child: TextField(
+        controller: controller,
         obscureText: obscureText,
         style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
@@ -86,10 +94,14 @@ class UIWidgets {
     );
   }
 
-  static Widget buildAuthButton(ThemeData theme, String text, VoidCallback onPressed) {
+  static Widget buildAuthButton(
+    ThemeData theme,
+    String text,
+    VoidCallback onPressed,
+  ) {
     return Container(
       width: double.infinity,
-      height: 50,
+      height: 60,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(16),
         gradient: LinearGradient(
@@ -136,10 +148,7 @@ class UIWidgets {
     return Row(
       children: [
         Expanded(
-          child: Divider(
-            color: Colors.grey.withAlpha(128),
-            thickness: 1,
-          ),
+          child: Divider(color: Colors.grey.withAlpha(128), thickness: 1),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -153,10 +162,7 @@ class UIWidgets {
           ),
         ),
         Expanded(
-          child: Divider(
-            color: Colors.grey.withAlpha(128),
-            thickness: 1,
-          ),
+          child: Divider(color: Colors.grey.withAlpha(128), thickness: 1),
         ),
       ],
     );
@@ -165,27 +171,12 @@ class UIWidgets {
   static Widget buildSocialButtons(ThemeData theme) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildSocialButton(
-          icon: Icons.g_mobiledata,
+          icon: Icons.g_mobiledata_rounded,
           backgroundColor: Colors.white,
           iconColor: Colors.red,
-          borderColor: Colors.grey.shade300,
-          onPressed: () {},
-        ),
-        const SizedBox(width: 16),
-        buildSocialButton(
-          icon: Icons.facebook,
-          backgroundColor: Colors.white,
-          iconColor: Colors.blue[700]!,
-          borderColor: Colors.grey.shade300,
-          onPressed: () {},
-        ),
-        const SizedBox(width: 16),
-        buildSocialButton(
-          icon: Icons.apple,
-          backgroundColor: Colors.white,
-          iconColor: Colors.black,
           borderColor: Colors.grey.shade300,
           onPressed: () {},
         ),
@@ -200,36 +191,39 @@ class UIWidgets {
     required Color borderColor,
     required VoidCallback onPressed,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(20),
-            blurRadius: 10,
-            spreadRadius: 1,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onPressed,
+    return Expanded(
+      child: Container(
+        height: 60,
+        decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
-          child: Ink(
-            decoration: BoxDecoration(
-              color: backgroundColor,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: borderColor, width: 1),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withAlpha(20),
+              blurRadius: 10,
+              spreadRadius: 1,
+              offset: const Offset(0, 2),
             ),
-            child: Container(
-              width: 48,
-              height: 48,
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            onTap: onPressed,
+            borderRadius: BorderRadius.circular(16),
+            child: Ink(
               decoration: BoxDecoration(
+                color: backgroundColor,
                 borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: borderColor, width: 1),
               ),
-              child: Center(child: Icon(icon, color: iconColor, size: 28)),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(child: Icon(icon, color: iconColor, size: 28)),
+              ),
             ),
           ),
         ),
@@ -241,19 +235,18 @@ class UIWidgets {
     required Widget content,
     required ThemeData theme,
     required Animation<double> fadeAnimation,
+    required context,
   }) {
-    return Card(
-      elevation: 0,
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.6,
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(24)),
+      //
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(24),
           color: Colors.white.withAlpha(204),
-          border: Border.all(
-            color: Colors.white.withAlpha(179),
-            width: 1,
-          ),
+          border: Border.all(color: Colors.white.withAlpha(179), width: 1),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withAlpha(20),
