@@ -55,11 +55,15 @@ class UIWidgets {
   }
 
   static Widget buildTextField({
+    bool obscureText = false,
+    // For the Visible Password Icon
+    VoidCallback? onSuffixIconPressed,
+    bool hasSuffixIcon = false,
+    bool isPasswordVisible = false,
     required String hintText,
     required IconData icon,
-    required TextEditingController controller,
-    bool obscureText = false,
     required ThemeData theme,
+    required TextEditingController controller,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -68,12 +72,25 @@ class UIWidgets {
       ),
       child: TextField(
         controller: controller,
-        obscureText: obscureText,
+        obscureText: obscureText && !isPasswordVisible,
         style: GoogleFonts.poppins(fontSize: 16, color: Colors.black87),
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: GoogleFonts.poppins(color: Colors.black45, fontSize: 16),
           prefixIcon: Icon(icon, color: Colors.black54, size: 22),
+          suffixIcon:
+              hasSuffixIcon
+                  ? IconButton(
+                    icon: Icon(
+                      isPasswordVisible
+                          ? Icons.visibility_outlined
+                          : Icons.visibility_off_outlined,
+                      color: Colors.black54,
+                    ),
+                    onPressed: onSuffixIconPressed,
+                  )
+                  : null,
+
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(16),
             borderSide: BorderSide.none,

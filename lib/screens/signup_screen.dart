@@ -19,6 +19,7 @@ class _SignupScreenState extends State<SignupScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  bool showConfirmPassword = false;
 
   @override
   void initState() {
@@ -149,6 +150,7 @@ class _SignupScreenState extends State<SignupScreen>
                                 color: Colors.black54,
                               ),
                             ),
+                            // ------------ Full Name ----------------
                             SizedBox(height: isSmallScreen ? 16 : 20),
                             UIWidgets.buildTextField(
                               hintText: "Full Name",
@@ -156,6 +158,7 @@ class _SignupScreenState extends State<SignupScreen>
                               theme: theme,
                               controller: inputControllers.nameController,
                             ),
+                            // ------------ Email ----------------                
                             SizedBox(height: isSmallScreen ? 12 : 16),
                             UIWidgets.buildTextField(
                               hintText: "Email",
@@ -163,6 +166,7 @@ class _SignupScreenState extends State<SignupScreen>
                               theme: theme,
                               controller: inputControllers.emailController,
                             ),
+                            // ------------ Password ----------------
                             SizedBox(height: isSmallScreen ? 12 : 16),
                             UIWidgets.buildTextField(
                               hintText: "Password",
@@ -170,6 +174,28 @@ class _SignupScreenState extends State<SignupScreen>
                               obscureText: true,
                               theme: theme,
                               controller: inputControllers.passwordController,
+                              hasSuffixIcon: true,
+                              isPasswordVisible: showConfirmPassword,
+                              onSuffixIconPressed:
+                                  () => setState(() {
+                                    showConfirmPassword = !showConfirmPassword;
+                                  }),
+                            ),
+                            // ------------ Confirm Password ----------------     
+                            SizedBox(height: isSmallScreen ? 12 : 16),
+                            UIWidgets.buildTextField(
+                              hintText: "Confirm Password",
+                              icon: Icons.lock_outline,
+                              obscureText: true,
+                              theme: theme,
+                              controller:
+                                  inputControllers.confirmPasswordController,
+                              hasSuffixIcon: true,
+                              isPasswordVisible: showConfirmPassword,
+                              onSuffixIconPressed:
+                                  () => setState(() {
+                                    showConfirmPassword = !showConfirmPassword;
+                                  }),
                             ),
                             SizedBox(height: isSmallScreen ? 16 : 24),
                             UIWidgets.buildAuthButton(theme, "Sign up", () {
