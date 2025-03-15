@@ -145,6 +145,7 @@ class _LoginScreenState extends State<LoginScreen>
                                 color: Colors.black54,
                               ),
                             ),
+                            // ------------------- Email -------------------
                             SizedBox(height: isSmallScreen ? 16 : 24),
                             UIWidgets.buildTextField(
                               hintText: "Email",
@@ -152,6 +153,7 @@ class _LoginScreenState extends State<LoginScreen>
                               theme: theme,
                               controller: inputControllers.nameController,
                             ),
+                            // ------------------- Password -------------------
                             SizedBox(height: isSmallScreen ? 12 : 16),
                             UIWidgets.buildTextField(
                               hintText: "Password",
