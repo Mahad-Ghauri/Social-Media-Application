@@ -20,6 +20,11 @@ class _SignupScreenState extends State<SignupScreen>
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
   bool showConfirmPassword = false;
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void initState() {
@@ -38,11 +43,82 @@ class _SignupScreenState extends State<SignupScreen>
   void dispose() {
     _animationController.dispose();
     super.dispose();
+    _formKey.currentState?.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
   }
 
   //  Instance for Authentication Controller
   final AuthenticationController authController = AuthenticationController();
   final InputControllers inputControllers = InputControllers();
+
+  void _handleSignUp() {
+    if (_formKey.currentState!.validate()) {
+      // Validate password match
+      if (_passwordController.text != _confirmPasswordController.text) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Passwords do not match'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Validate password strength
+      if (_passwordController.text.length < 6) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Password must be at least 6 characters long'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
+
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      authController
+          .signUpWithEmailPassword(
+            _emailController.text.trim(),
+            _passwordController.text.trim(),
+            context,
+          )
+          .then((_) {
+            // Close loading indicator
+            Navigator.pop(context);
+
+            // Navigate to home screen or show success message
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Account created successfully!'),
+                backgroundColor: Colors.green,
+              ),
+            );
+
+            // Navigate to login screen
+            Navigator.pushReplacementNamed(context, LoginScreen.id);
+          })
+          .catchError((error) {
+            // Close loading indicator
+            Navigator.pop(context);
+
+            // Show error message
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(error.toString()),
+                backgroundColor: Colors.red,
+              ),
+            );
+          });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -122,182 +198,181 @@ class _SignupScreenState extends State<SignupScreen>
                       SizedBox(height: isSmallScreen ? 16 : 24),
                       UIWidgets.buildGlassmorphicCard(
                         context: context,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Sign up",
-                              style: GoogleFonts.poppins(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
+                        content: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Sign up",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: isSmallScreen ? 4 : 8),
-                            Text(
-                              "Create a new account to get started.",
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.black54,
+                              SizedBox(height: isSmallScreen ? 4 : 8),
+                              Text(
+                                "Create a new account to get started.",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                ),
                               ),
-                            ),
-                            // ------------ Full Name ----------------
-                            SizedBox(height: isSmallScreen ? 16 : 20),
-                            UIWidgets.buildTextField(
-                              hintText: "Full Name",
-                              icon: Icons.person_outline,
-                              theme: theme,
-                              controller: inputControllers.nameController,
-                              keyboardType: TextInputType.name,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your full name';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers.nameController.text = value;
-                              },
-                            ),
-                            // ------------ Email ----------------
-                            SizedBox(height: isSmallScreen ? 12 : 16),
-                            UIWidgets.buildTextField(
-                              hintText: "Email",
-                              icon: Icons.email_outlined,
-                              theme: theme,
-                              controller: inputControllers.emailController,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your email';
-                                }
-                                if (!RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                ).hasMatch(value)) {
-                                  return 'Please enter a valid email';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers.emailController.text = value;
-                              },
-                            ),
-                            // ------------ Password ----------------
-                            SizedBox(height: isSmallScreen ? 12 : 16),
-                            UIWidgets.buildTextField(
-                              hintText: "Password",
-                              icon: Icons.lock_outline,
-                              obscureText: true,
-                              theme: theme,
-                              controller: inputControllers.passwordController,
-                              hasSuffixIcon: true,
-                              isPasswordVisible: showConfirmPassword,
-                              onSuffixIconPressed:
-                                  () => setState(() {
-                                    showConfirmPassword = !showConfirmPassword;
-                                  }),
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your password';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers.passwordController.text =
-                                    value;
-                              },
-                            ),
-                            // ------------ Confirm Password ----------------
-                            SizedBox(height: isSmallScreen ? 12 : 16),
-                            UIWidgets.buildTextField(
-                              hintText: "Confirm Password",
-                              icon: Icons.lock_outline,
-                              obscureText: true,
-                              theme: theme,
-                              controller:
-                                  inputControllers.confirmPasswordController,
-                              hasSuffixIcon: true,
-                              isPasswordVisible: showConfirmPassword,
-                              onSuffixIconPressed:
-                                  () => setState(() {
-                                    showConfirmPassword = !showConfirmPassword;
-                                  }),
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your password';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers
-                                    .confirmPasswordController
-                                    .text = value;
-                              },
-                            ),
-                            SizedBox(height: isSmallScreen ? 16 : 24),
-                            UIWidgets.buildAuthButton(theme, "Sign up", () {
-                              authController.signUpWithEmailPassword(
-                                inputControllers.emailController.text.trim(),
-                                inputControllers.passwordController.text.trim(),
-                                context,
-                              );
-                            }),
-                            SizedBox(height: isSmallScreen ? 16 : 20),
-                            UIWidgets.buildDivider(),
-                            SizedBox(height: isSmallScreen ? 16 : 20),
-                            UIWidgets.buildSocialButtons(theme),
-                            const Spacer(),
-                            Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Already have an account?",
-                                    style: GoogleFonts.poppins(
-                                      color: Colors.black54,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        LoginScreen.id,
-                                      );
-
-                                      // Navigator.pushReplacement(
-                                      //   context,
-                                      //   MaterialPageRoute(
-                                      //     builder:
-                                      //         (context) =>
-                                      //             const LoginScreen(),
-                                      //   ),
-                                      // );
-                                    },
-                                    style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          theme.colorScheme.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 0,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Sign in",
+                              // ------------ Full Name ----------------
+                              SizedBox(height: isSmallScreen ? 16 : 20),
+                              UIWidgets.buildTextField(
+                                hintText: "Full Name",
+                                icon: Icons.person_outline,
+                                theme: theme,
+                                controller: _nameController,
+                                keyboardType: TextInputType.name,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your full name';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              // ------------ Email ----------------
+                              SizedBox(height: isSmallScreen ? 12 : 16),
+                              UIWidgets.buildTextField(
+                                hintText: "Email",
+                                icon: Icons.email_outlined,
+                                theme: theme,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!RegExp(
+                                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                  ).hasMatch(value)) {
+                                    return 'Please enter a valid email';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              // ------------ Password ----------------
+                              SizedBox(height: isSmallScreen ? 12 : 16),
+                              UIWidgets.buildTextField(
+                                hintText: "Password",
+                                icon: Icons.lock_outline,
+                                obscureText: true,
+                                theme: theme,
+                                controller: _passwordController,
+                                hasSuffixIcon: true,
+                                isPasswordVisible: showConfirmPassword,
+                                onSuffixIconPressed:
+                                    () => setState(() {
+                                      showConfirmPassword =
+                                          !showConfirmPassword;
+                                    }),
+                                keyboardType: TextInputType.visiblePassword,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              // ------------ Confirm Password ----------------
+                              SizedBox(height: isSmallScreen ? 12 : 16),
+                              UIWidgets.buildTextField(
+                                hintText: "Confirm Password",
+                                icon: Icons.lock_outline,
+                                obscureText: true,
+                                theme: theme,
+                                controller: _confirmPasswordController,
+                                hasSuffixIcon: true,
+                                isPasswordVisible: showConfirmPassword,
+                                onSuffixIconPressed:
+                                    () => setState(() {
+                                      showConfirmPassword =
+                                          !showConfirmPassword;
+                                    }),
+                                keyboardType: TextInputType.visiblePassword,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              SizedBox(height: isSmallScreen ? 16 : 24),
+                              UIWidgets.buildAuthButton(
+                                theme,
+                                "Sign up",
+                                _handleSignUp,
+                              ),
+                              SizedBox(height: isSmallScreen ? 16 : 20),
+                              UIWidgets.buildDivider(),
+                              SizedBox(height: isSmallScreen ? 16 : 20),
+                              UIWidgets.buildSocialButtons(theme),
+                              const Spacer(),
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Already have an account?",
                                       style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black54,
                                         fontSize: 13,
-                                        color: theme.colorScheme.primary,
                                       ),
                                     ),
-                                  ),
-                                ],
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          LoginScreen.id,
+                                        );
+
+                                        // Navigator.pushReplacement(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //     builder:
+                                        //         (context) =>
+                                        //             const LoginScreen(),
+                                        //   ),
+                                        // );
+                                      },
+                                      style: TextButton.styleFrom(
+                                        foregroundColor:
+                                            theme.colorScheme.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 0,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "Sign in",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                         theme: theme,
                         fadeAnimation: _fadeAnimation,

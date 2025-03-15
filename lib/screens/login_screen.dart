@@ -18,6 +18,9 @@ class _LoginScreenState extends State<LoginScreen>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _fadeAnimation;
+  final _formKey = GlobalKey<FormState>();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   @override
   void initState() {
@@ -34,8 +37,18 @@ class _LoginScreenState extends State<LoginScreen>
 
   @override
   void dispose() {
+    _formKey.currentState?.dispose();
     _animationController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
+  }
+
+  void _handleSignIn() {
+    if (_formKey.currentState!.validate()) {
+      // Handle sign in logic here
+      print('Form is valid');
+    }
   }
 
   final InputControllers inputControllers = InputControllers();
@@ -116,136 +129,142 @@ class _LoginScreenState extends State<LoginScreen>
                       UIWidgets.buildLogo(isSmallScreen ? 150 : 200),
                       UIWidgets.buildGlassmorphicCard(
                         context: context,
-                        content: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              "Login",
-                              style: GoogleFonts.poppins(
-                                fontSize: 22,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black87,
-                              ),
-                            ),
-                            SizedBox(height: isSmallScreen ? 4 : 8),
-                            Text(
-                              "Welcome back! Please login to your account.",
-                              style: GoogleFonts.poppins(
-                                fontSize: 13,
-                                color: Colors.black54,
-                              ),
-                            ),
-                            // ------------------- Email -------------------
-                            SizedBox(height: isSmallScreen ? 16 : 24),
-                            UIWidgets.buildTextField(
-                              hintText: "Email",
-                              icon: Icons.email_outlined,
-                              theme: theme,
-                              controller: inputControllers.nameController,
-                              keyboardType: TextInputType.emailAddress,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your email';
-                                }
-                                if (!RegExp(
-                                  r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
-                                ).hasMatch(value)) {
-                                  return 'Please enter a valid email';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers.nameController.text = value;
-                              },
-                            ),
-                            // ------------------- Password -------------------
-                            SizedBox(height: isSmallScreen ? 12 : 16),
-                            UIWidgets.buildTextField(
-                              hintText: "Password",
-                              icon: Icons.lock_outline,
-                              obscureText: true,
-                              theme: theme,
-                              controller: inputControllers.passwordController,
-                              keyboardType: TextInputType.visiblePassword,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter your password';
-                                }
-                                return null;
-                              },
-                              onChanged: (value) {
-                                inputControllers.passwordController.text =
-                                    value;
-                              },
-                            ),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: TextButton(
-                                onPressed: () {},
-                                style: TextButton.styleFrom(
-                                  foregroundColor: theme.colorScheme.primary,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                    horizontal: 8,
-                                  ),
-                                ),
-                                child: Text(
-                                  "Forgot password?",
-                                  style: GoogleFonts.poppins(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                        content: Form(
+                          key: _formKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Login",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.w600,
+                                  color: Colors.black87,
                                 ),
                               ),
-                            ),
-                            SizedBox(height: isSmallScreen ? 16 : 24),
-                            UIWidgets.buildAuthButton(theme, "Sign in", () {}),
-                            SizedBox(height: isSmallScreen ? 16 : 20),
-                            UIWidgets.buildDivider(),
-                            SizedBox(height: isSmallScreen ? 16 : 20),
-                            UIWidgets.buildSocialButtons(theme),
-                            // const Spacer(),
-                            // Toggle to signup screen
-                            Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    "Don't have an account?",
+                              SizedBox(height: isSmallScreen ? 4 : 8),
+                              Text(
+                                "Welcome back! Please login to your account.",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                              // ------------------- Email -------------------
+                              SizedBox(height: isSmallScreen ? 16 : 24),
+                              UIWidgets.buildTextField(
+                                hintText: "Email",
+                                icon: Icons.email_outlined,
+                                theme: theme,
+                                controller: _emailController,
+                                keyboardType: TextInputType.emailAddress,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                  if (!RegExp(
+                                    r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                  ).hasMatch(value)) {
+                                    return 'Please enter a valid email';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              // ------------------- Password -------------------
+                              SizedBox(height: isSmallScreen ? 12 : 16),
+                              UIWidgets.buildTextField(
+                                hintText: "Password",
+                                icon: Icons.lock_outline,
+                                obscureText: true,
+                                theme: theme,
+                                controller: _passwordController,
+                                keyboardType: TextInputType.visiblePassword,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your password';
+                                  }
+                                  return null;
+                                },
+                                onChanged: (value) {
+                                  setState(() {});
+                                },
+                              ),
+                              Align(
+                                alignment: Alignment.centerRight,
+                                child: TextButton(
+                                  onPressed: () {},
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: theme.colorScheme.primary,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 8,
+                                      horizontal: 8,
+                                    ),
+                                  ),
+                                  child: Text(
+                                    "Forgot password?",
                                     style: GoogleFonts.poppins(
-                                      color: Colors.black54,
                                       fontSize: 13,
+                                      fontWeight: FontWeight.w500,
                                     ),
                                   ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        SignupScreen.id,
-                                      );
-                                    },
-                                    style: TextButton.styleFrom(
-                                      foregroundColor:
-                                          theme.colorScheme.primary,
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 0,
-                                      ),
-                                    ),
-                                    child: Text(
-                                      "Sign up",
-                                      style: GoogleFonts.poppins(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 13,
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
-                          ],
+                              SizedBox(height: isSmallScreen ? 16 : 24),
+                              UIWidgets.buildAuthButton(
+                                theme,
+                                "Sign in",
+                                _handleSignIn,
+                              ),
+                              SizedBox(height: isSmallScreen ? 16 : 20),
+                              UIWidgets.buildDivider(),
+                              SizedBox(height: isSmallScreen ? 16 : 20),
+                              UIWidgets.buildSocialButtons(theme),
+                              // const Spacer(),
+                              // Toggle to signup screen
+                              Center(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      "Don't have an account?",
+                                      style: GoogleFonts.poppins(
+                                        color: Colors.black54,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pushNamed(
+                                          context,
+                                          SignupScreen.id,
+                                        );
+                                      },
+                                      style: TextButton.styleFrom(
+                                        foregroundColor:
+                                            theme.colorScheme.primary,
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 0,
+                                        ),
+                                      ),
+                                      child: Text(
+                                        "Sign up",
+                                        style: GoogleFonts.poppins(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 13,
+                                          color: theme.colorScheme.primary,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                         theme: theme,
                         fadeAnimation: _fadeAnimation,
